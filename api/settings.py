@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',  # Django Rest Framework
-    'api',  # Seu aplicativo
+    'api_wpp',          # Adicione o app `api_wpp` aqui
 ]
 
 
