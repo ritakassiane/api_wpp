@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexão do Cliente</title>
+</head>
+<body>
+    <h1>Conexão para {{ instance_name }}</h1>
+
+    <p><strong>Pairing Code:</strong> {{ pairing_code }}</p>
+
+    {% if qr_code_base64 %}
+        <p><strong>QR Code:</strong></p>
+        <img src="{{ qr_code_base64 }}" alt="QR Code">
+    {% else %}
+        <p>QR Code não disponível.</p>
+    {% endif %}
+
+    <button id="refresh-code">REFRESH CODE</button>
+</body>
+</html>
