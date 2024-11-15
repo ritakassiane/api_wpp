@@ -5,6 +5,9 @@ from .models import Customer, Product, Order, OrderItem
 from .serializers import ProductSerializer
 from django.db import transaction
 import decimal
+from django.urls import reverse
+from django.shortcuts import render
+from django.http import HttpResponse
 
 @api_view(['POST'])
 @transaction.atomic
@@ -19,6 +22,13 @@ def process_sale(request):
             "name": customer_data["name"],
             "phone": customer_data["phone_number"],
         }
+    )
+
+    if created:
+        user_url = reverse('customer_page', args=[customer.id])
+        return Response(
+            {"message": "Customer created", "customer_url": request.build_absolute_uri(user_url)},
+            status=status.HTTP_201_CREATED,
     )
 
     # Processa cada produto no pedido e cria, se não existir
@@ -49,6 +59,14 @@ def process_sale(request):
         )
 
     return Response({"message": "Sale processed successfully"}, status=status.HTTP_201_CREATED)
+
+def customer_page(request, customer_id):
+    try:
+        customer = Customer.objects.get(id=customer_id)
+        # Você pode renderizar uma página HTML personalizada
+        return render(request, 'customer_page.html', {"customer": customer})
+    except Customer.DoesNotExist:
+        return HttpResponse("Customer not found", status=404)
 
 @api_view(['POST'])
 def create_product(request):
