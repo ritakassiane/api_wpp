@@ -123,4 +123,11 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Diretório principal onde os arquivos estáticos estão localizados
+STATIC_URL = '/static/'
+
+# Certifique-se de apontar para o diretório "static" do seu projeto
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Diretório estático no nível do projeto
+]
+

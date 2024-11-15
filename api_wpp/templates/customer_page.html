@@ -1,24 +1,68 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>Customer Page</title>
 </head>
-<body>
-    <h1>Bem-vindo, {{ customer.name }}</h1>
-    <p>Email: {{ customer.email }}</p>
-    <p>Telefone: {{ customer.phone }}</p>
+<body class="d-flex align-items-center justify-content-center vh-100" style="background: #000000; position: relative; overflow: hidden;">
 
-    <form method="POST" action="{% url 'connect_instance'%}">
-        {% csrf_token %}
-        <label for="phone">Número de Telefone:</label><br>
-        <input type="text" id="phone" name="phone" placeholder="5511987654321" required><br><br>
+    <!-- Mancha Radial no Fundo -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(148, 1, 248, 0.3), rgba(103, 1, 172, 0) 80%); z-index: 0; pointer-events: none;">
+    </div>
 
-        <label for="webhookUrl">Webhook URL:</label><br>
-        <input type="text" id="webhookUrl" name="webhookUrl" placeholder="https://meu-webhook.com" required><br><br>
+    <!-- Imagem de Fundo Centralizada -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; pointer-events: none;">
+        <img src="{% static 'images/bg_grid.svg' %}" alt="Background Grid" style="max-width: 90vw; max-height: 90vh; opacity: 0.15;">
+    </div>
 
-        <button type="submit">Conectar</button>
-    </form>
+    <!-- Card com o formulário -->
+    <div class="card p-4 text-white" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(5px); border-radius: 15px; width: 80%; max-width: 600px; z-index: 1;">
+        <h2 class="text-left mb-4 fw-bold">Conectar Instância</h2>
+        <p>Preencha os campos abaixo para conectar seu WhatsApp</p>
+
+        <form method="POST" action="{% url 'connect_instance' %}">
+            {% csrf_token %}
+            <!-- Campo Número de Telefone -->
+            <div class="form-floating mb-3">
+                <input 
+                    type="text" 
+                    class="form-control bg-transparent text-white border-1" 
+                    id="phone" 
+                    name="phone" 
+                    placeholder="Número de Telefone" 
+                    required>
+                <label for="phone">
+                    <i class="bi bi-telephone me-2"></i>
+                    Número de Telefone
+                </label>
+            </div>
+
+            <!-- Campo Webhook URL -->
+            <div class="form-floating mb-3">
+                <input 
+                    type="text" 
+                    class="form-control bg-transparent text-white border-1" 
+                    id="webhookUrl" 
+                    name="webhookUrl" 
+                    placeholder="Webhook URL" 
+                    required>
+                <label for="webhookUrl">
+                    <i class="bi bi-link-45deg me-2"></i>
+                    Webhook URL
+                </label>
+            </div>
+
+            <!-- Botão de Conectar -->
+            <button type="submit" class="btn w-100" style="background-color: #AE02FF; color: white; border-radius: 25px;">Conectar</button>
+        </form>
+    </div>
+
 </body>
 </html>

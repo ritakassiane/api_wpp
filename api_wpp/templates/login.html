@@ -1,27 +1,82 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <!-- CSS Customizado -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body>
-    <h1>Login</h1>
-    <form method="POST" action="{% url 'login' %}">
-        {% csrf_token %}
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
+<body class="d-flex align-items-center justify-content-center vh-100" style="background: #000000; position: relative; overflow: hidden;">
 
-        <label for="password">Senha:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
+    <!-- Mancha Radial no Fundo -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(148, 1, 248, 0.3), rgba(103, 1, 172, 0) 80%); z-index: 0; pointer-events: none;">
+    </div>
 
-        <button type="submit">Login</button>
-    </form>
-    <a href="{% url 'logout' %}">Logout</a>
+    <!-- Imagem de Fundo Centralizada -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; pointer-events: none;">
+        <img src="{% static 'images/bg_grid.svg' %}" alt="Background Grid" style="max-width: 90vw; max-height: 90vh; opacity: 0.15;">
+    </div>
 
+    <!-- Card com o formulário -->
+    <div class="card p-4 text-white" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(5px); border-radius: 15px; width: 80%; max-width: 600px; z-index: 1;">
+        <h2 class="text-left mb-4 fw-bold">Entrar</h2>
+        <p>Entre para conectar seu WhatsApp</p>
 
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <!-- Campo de Email -->
+            <div class="form-floating mb-3">
+                <input 
+                    type="email" 
+                    class="form-control bg-transparent text-white border-1" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Digite seu email" 
+                    required>
+                <label for="email">
+                    <i class="bi bi-envelope me-2"></i>
+                    Digite seu email
+                </label>
+            </div>
+
+            <!-- Campo de Senha -->
+            <div class="form-floating mb-3">
+                <input 
+                    type="password" 
+                    class="form-control bg-transparent text-white border-1" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Digite a senha fornecida" 
+                    required>
+                <label for="password">
+                    <i class="bi bi-lock me-2"></i>
+                    Digite a senha fornecida
+                </label>
+            </div>
+
+            <!-- Botão de Login -->
+            <button type="submit" class="btn w-100" style="background-color: #9401F8; color: white; border-radius: 25px;">Entrar</button>
+        </form>
+
+        <!-- Mensagem de erro -->
+        {% if error %}
+            <p class="text-danger text-center mt-3">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Logo no Rodapé -->
+    <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1;">
+        <img src="{% static 'images/logo.png' %}" alt="Logo" style="max-width: 150px;">
+    </div>
+
 </body>
 </html>

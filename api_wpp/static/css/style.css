@@ -1,0 +1,53 @@
+/* Fundo cobrindo toda a tela */
+body {
+    background-color: #000000; /* Cor de fundo */
+    height: 100vh; /* Ocupa toda a altura da viewport */
+    margin: 0;
+    font-family: 'Raleway', sans-serif;
+    color: white; /* Cor branca para o texto */
+    overflow: hidden;
+}
+
+/* Card com efeito de vidro */
+.card {
+    background: rgba(255, 255, 255, 0.05); /* Fundo transparente */
+    backdrop-filter: blur(5px); /* Blur no fundo */
+    border-radius: 15px; /* Borda arredondada */
+    box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.2); /* Sombra */
+}
+
+/* Customizações de bordas e placeholders */
+.form-control {
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Bordas transparentes */
+    border-radius: 8px; /* Bordas levemente arredondadas */
+    color: white; /* Texto branco */
+    background-color: transparent; /* Fundo transparente */
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.3); /* Placeholder transparente */
+}
+
+.form-control:focus {
+    border-color: #7B00FF; /* Destaque ao clicar */
+    box-shadow: 0 0 5px #7B00FF; /* Efeito de brilho */
+}
+
+/* Botão */
+.btn {
+    transition: all 0.3s ease;
+    font-family: 'Raleway', sans-serif;
+}
+
+.btn:hover {
+    background-color: #6701AC; /* Cor mais escura ao passar o mouse */
+}
+
+/* Logo no rodapé */
+footer img {
+    max-width: 150px;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

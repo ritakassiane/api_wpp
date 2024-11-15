@@ -1,12 +1,20 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conexão do Cliente</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script>
         function refreshCode() {
-            const url = "/api/customer/refresh/";  // Atualizado para refletir a rota correta
+            const url = "/api/customer/refresh/";
 
             fetch(url, {
                 method: 'GET',
@@ -22,10 +30,7 @@
                 }
             })
             .then(data => {
-                // Atualizar o Pairing Code na página
                 document.getElementById('pairing-code').textContent = data.pairingCode;
-
-                // Esconder o QR Code
                 const qrCodeImage = document.getElementById('qr-code');
                 if (qrCodeImage) {
                     qrCodeImage.style.display = 'none';
@@ -38,24 +43,36 @@
         }
     </script>
 </head>
-<body>
-    <h1>Conexão para {{ instance_name }}</h1>
+<body class="d-flex align-items-center justify-content-center vh-100" style="background: #000000; position: relative; overflow: hidden;">
 
-    <!-- Exibir o Pairing Code -->
-    <p><strong>Pairing Code:</strong> <span id="pairing-code">{{ pairing_code }}</span></p>
+    <!-- Mancha Radial no Fundo -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(148, 1, 248, 0.3), rgba(103, 1, 172, 0) 80%); z-index: 0; pointer-events: none;">
+    </div>
 
-    <!-- Exibir o QR Code (se disponível) -->
-    {% if qr_code_base64 %}
-        <p><strong>QR Code:</strong></p>
-        <img id="qr-code" src="{{ qr_code_base64 }}" alt="QR Code">
-    {% else %}
-        <p>QR Code não disponível.</p>
-    {% endif %}
+    <!-- Imagem de Fundo Centralizada -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; pointer-events: none;">
+        <img src="{% static 'images/bg_grid.svg' %}" alt="Background Grid" style="max-width: 90vw; max-height: 90vh; opacity: 0.15;">
+    </div>
 
-    <!-- Botão de REFRESH CODE -->
-    <button id="refresh-code" onclick="refreshCode()">REFRESH CODE</button>
+    <!-- Card com a Conexão -->
+    <div class="card p-4 text-white" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(5px); border-radius: 15px; width: 80%; max-width: 600px; z-index: 2;">
+        <h2 class="text-left mb-4 fw-bold">Conexão para {{ instance_name }}</h2>
+        <p>Pairing Code</p>
+        <h2 id="pairing-code" style="font-weight: 900; text-align: center;">{{ pairing_code }}</h2>
 
-    <!-- Logout -->
-    <a href="{% url 'logout' %}">Logout</a>
+        {% if qr_code_base64 %}
+            <div class="text-center mt-4">
+                <img id="qr-code" src="{{ qr_code_base64 }}" alt="QR Code" style="max-width: 200px;">
+            </div>
+        {% else %}
+            <p class="text-center">QR Code não disponível.</p>
+        {% endif %}
+
+        <button id="refresh-code" onclick="refreshCode()" class="btn w-100 mt-4" style="background-color: #AE02FF; color: white; border-radius: 25px;">REFRESH CODE</button>
+        <div class="text-center mt-3">
+            <a href="{% url 'logout' %}" class="text-decoration-none" style="color: #AE02FF;">Logout</a>
+        </div>
+    </div>
+
 </body>
 </html>
