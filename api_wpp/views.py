@@ -6,7 +6,7 @@ from .serializers import ProductSerializer
 from django.db import transaction
 import decimal
 from django.urls import reverse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, JsonResponse
 import requests
 
@@ -70,18 +70,20 @@ def customer_page(request, customer_id):
         return HttpResponse("Customer not found", status=404)
     
 
-def connect_instance(request, customer_id):
+def connect_instance(request):
     if request.method == "POST":
+        customer_id = request.session.get("customer_id")
+        if not customer_id:
+            return redirect("login")
+        
         customer = get_object_or_404(Customer, id=customer_id)
-
-        # Obter os dados do formulário
         phone = request.POST.get("phone")
         webhook_url = request.POST.get("webhookUrl")
 
         # Dados para o POST na API externa
         url = "https://evolution.karolnaturais.pt/instance/create"
         payload = {
-            "instanceName": customer.name,
+            "instanceName": customer.email,
             "number": phone,
             "qrcode": True,
             "integration": "WHATSAPP-BAILEYS",
@@ -100,22 +102,20 @@ def connect_instance(request, customer_id):
             "Content-Type": "application/json"
         }
 
-        # Enviar a solicitação para a API externa
         response = requests.post(url, json=payload, headers=headers)
 
-        if response.status_code == 200:
-            # Parse do JSON para extrair os campos necessários
+        if response.status_code == 201:
             data = response.json()
             instance_name = data.get("instance", {}).get("instanceName", "N/A")
             pairing_code = data.get("qrcode", {}).get("pairingCode", "N/A")
             qr_code_base64 = data.get("qrcode", {}).get("base64", "")
 
-            # Renderizar a página com os dados
             return render(
                 request,
                 "connect_instance.html",
                 {
-                    "instance_name": instance_name,
+                    "customer": customer,
+                    "instance_name": customer.email,
                     "pairing_code": pairing_code,
                     "qr_code_base64": qr_code_base64,
                 },
@@ -130,46 +130,67 @@ def connect_instance(request, customer_id):
                 },
             )
 
-    return JsonResponse({"error": "Método não permitido"}, status=405)
-    if request.method == "POST":
+
+def logout_view(request):
+    request.session.flush()  # Limpa todos os dados da sessão
+    return redirect("login")
+
+def refresh_code(request):
+    print(request)
+    print("Sessão:", request.session.get("customer_id"))
+
+    if request.method == "GET":
+        # Obter o cliente pelo ID
+        customer_id = request.session.get("customer_id")
+        if not customer_id:
+            return redirect("login")
+        
         customer = get_object_or_404(Customer, id=customer_id)
+        print(customer)
 
-        # Obter os dados do formulário
-        phone = request.POST.get("phone")
-        webhook_url = request.POST.get("webhookUrl")
+        # Configurar a URL para a API externa
+        url = f"https://evolution.karolnaturais.pt/instance/connect/{customer.email}"
 
-        # Dados para o POST na API externa
-        url = "https://evolution.karolnaturais.pt/instance/create"
-        payload = {
-            "instanceName": customer.name,
-            "number": phone,
-            "qrcode": True,
-            "integration": "WHATSAPP-BAILEYS",
-            "reject_call": True,
-            "groupsIgnore": True,
-            "alwaysOnline": True,
-            "readMessages": True,
-            "readStatus": True,
-            "syncFullHistory": False,
-            "webhookUrl": webhook_url,
-            "webhookByEvents": True,
-            "webhookBase64": True,
-        }
         headers = {
             "apikey": "14bef9be8d234edce9e2fd15c64ddcf7",
-            "Content-Type": "application/json"
         }
 
-        # Enviar a solicitação para a API externa
-        response = requests.post(url, json=payload, headers=headers)
+        # Fazer a requisição para a API externa
+        response = requests.get(url, headers=headers)
 
-        # Retornar a resposta ao usuário
         if response.status_code == 200:
-            return JsonResponse({"message": "Conexão criada com sucesso!", "response": response.json()})
+            # Retornar o novo Pairing Code para o frontend
+            data = response.json()
+            return JsonResponse({
+                "pairingCode": data.get("pairingCode", "N/A")
+            })
         else:
-            return JsonResponse({"message": "Erro ao criar a conexão", "details": response.text}, status=400)
+            return JsonResponse({"error": "Erro ao buscar o novo Pairing Code"}, status=400)
 
     return JsonResponse({"error": "Método não permitido"}, status=405)
+
+def login_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        # Verificar se o cliente existe
+        try:
+            customer = Customer.objects.get(email=email)
+        except Customer.DoesNotExist:
+            return render(request, "login.html", {"error": "Cliente não encontrado."})
+
+        # Validar a senha (senha padrão)
+        if password != "senha-padrao":
+            return render(request, "login.html", {"error": "Senha inválida."})
+
+        # Armazenar o ID do cliente na sessão
+        request.session["customer_id"] = str(customer.id)
+
+        # Redirecionar para a página principal
+        return redirect("customer_page", customer_id=customer.id)
+
+    return render(request, "login.html")
 
 @api_view(['POST'])
 def create_product(request):

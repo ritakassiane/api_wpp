@@ -10,7 +10,7 @@
     <p>Email: {{ customer.email }}</p>
     <p>Telefone: {{ customer.phone }}</p>
 
-    <form method="POST" action="{% url 'connect_instance' customer.id %}">
+    <form method="POST" action="{% url 'connect_instance'%}">
         {% csrf_token %}
         <label for="phone">Número de Telefone:</label><br>
         <input type="text" id="phone" name="phone" placeholder="5511987654321" required><br><br>

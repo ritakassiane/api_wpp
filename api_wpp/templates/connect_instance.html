@@ -4,19 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conexão do Cliente</title>
+    <script>
+        function refreshCode() {
+            const url = "/api/customer/refresh/";  // Atualizado para refletir a rota correta
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Erro ao buscar o novo Pairing Code");
+                }
+            })
+            .then(data => {
+                // Atualizar o Pairing Code na página
+                document.getElementById('pairing-code').textContent = data.pairingCode;
+
+                // Esconder o QR Code
+                const qrCodeImage = document.getElementById('qr-code');
+                if (qrCodeImage) {
+                    qrCodeImage.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Erro ao atualizar o Pairing Code. Tente novamente.");
+            });
+        }
+    </script>
 </head>
 <body>
     <h1>Conexão para {{ instance_name }}</h1>
 
-    <p><strong>Pairing Code:</strong> {{ pairing_code }}</p>
+    <!-- Exibir o Pairing Code -->
+    <p><strong>Pairing Code:</strong> <span id="pairing-code">{{ pairing_code }}</span></p>
 
+    <!-- Exibir o QR Code (se disponível) -->
     {% if qr_code_base64 %}
         <p><strong>QR Code:</strong></p>
-        <img src="{{ qr_code_base64 }}" alt="QR Code">
+        <img id="qr-code" src="{{ qr_code_base64 }}" alt="QR Code">
     {% else %}
         <p>QR Code não disponível.</p>
     {% endif %}
 
-    <button id="refresh-code">REFRESH CODE</button>
+    <!-- Botão de REFRESH CODE -->
+    <button id="refresh-code" onclick="refreshCode()">REFRESH CODE</button>
+
+    <!-- Logout -->
+    <a href="{% url 'logout' %}">Logout</a>
 </body>
 </html>
