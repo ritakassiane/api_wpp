@@ -89,7 +89,7 @@ DATABASES = {
         'NAME': 'api_wpp',  # Substitua pelo nome do banco de dados criado na sua VPS
         'USER': 'postgres',
         'PASSWORD': '5856cb3914f90060a92bf4bd837b6904',
-        'HOST': 'localhost',
+        'HOST': '172.18.0.6',
         'PORT': '5432',
     }
 }
