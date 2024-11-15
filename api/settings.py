@@ -76,13 +76,23 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'api_wpp',  # Substitua pelo nome do banco de dados criado na sua VPS
+        'USER': 'postgres',
+        'PASSWORD': '5856cb3914f90060a92bf4bd837b6904',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
