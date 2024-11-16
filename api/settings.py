@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-=*urom8n_jb+adb_ae@2h(u1gk=g6@)1x=x8t_^iazj#8ckbw&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cloneu.com.br', 'vps.dev.cloneu.com.br']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cloneu.com.br', 'vps.dev.cloneu.com.br', '85.31.230.100']
 
 
 
